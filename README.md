@@ -90,3 +90,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Acknowledgements
 
 Special thanks to the Cabinet Office of Japan for providing the population and economic data used in this analysis.
+
+## Contact
+
+For questions or collaborations, please contact the repository owner.
