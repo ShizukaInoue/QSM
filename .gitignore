@@ -1,0 +1,67 @@
+# System files
+.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# All data files
+Japan/Data/
+# Explicitly exclude all data files
+*.csv
+*.xls
+*.xlsx
+*.dat
+*.json
+*.geojson
+
+# Explicitly exclude all shape files
+*.shp
+*.shx
+*.dbf
+*.prj
+*.cpg
+*.sbn
+*.sbx
+*.xml
+*.qpj
+*.qix
+
+# Keep only specific image files for documentation
+!Japan/Data/*.png
+!Japan/Data/*.jpg
+!Japan/Data/*.jpeg
+!Japan/Data/*.gif
+
+# Python environment
+env/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.env
+.venv
+venv/
+ENV/
+
+# OS specific files
+Thumbs.db 
