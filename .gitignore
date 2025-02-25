@@ -1,0 +1,40 @@
+# System files
+.DS_Store
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Additional large data files
+Japan/Data/*.csv
+Japan/Data/*.xls
+Japan/Data/*.xlsx
+Japan/Data/jpn*/*
+# Explicitly exclude shapefiles
+Japan/Data/**/*.shp
+Japan/Data/**/*.shx
+Japan/Data/**/*.dbf
+Japan/Data/**/*.prj
+Japan/Data/**/*.cpg
+Japan/Data/**/*.sbn
+Japan/Data/**/*.sbx
+# Keep image files for documentation
+!Japan/Data/*.png 
