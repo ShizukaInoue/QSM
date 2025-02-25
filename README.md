@@ -82,3 +82,7 @@ The Quantitative Spatial Model (QSM) used in this analysis is based on the equil
 3. Analyzes spatial patterns and their evolution over time
 4. Visualizes results using maps and charts
 
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
