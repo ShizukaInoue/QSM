@@ -86,3 +86,7 @@ The Quantitative Spatial Model (QSM) used in this analysis is based on the equil
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgements
+
+Special thanks to the Cabinet Office of Japan for providing the population and economic data used in this analysis.
