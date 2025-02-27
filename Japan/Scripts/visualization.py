@@ -221,8 +221,8 @@ def create_population_productivity_scatter(final_gdf, years=None, output_dir=Non
         # Create a figure with a clean white background
         fig = plt.figure(figsize=(15, 6), facecolor='white')
         
-        # Modern color palette
-        colors = ['#3498db', '#2ecc71', '#e74c3c']  # Blue, Green, Red
+        # Modern color palette - ensure we have enough colors
+        colors = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f1c40f', '#1abc9c', '#34495e', '#e67e22']
         
         for idx, year in enumerate(years, 1):
             ax = plt.subplot(1, len(years), idx)
@@ -247,13 +247,14 @@ def create_population_productivity_scatter(final_gdf, years=None, output_dir=Non
                        ha='center', va='center', fontsize=12, color='#555555')
                 continue
             
-            # Create scatter plot with modern styling
+            # Create scatter plot with modern styling - use modulo to avoid index errors
+            color_idx = (idx - 1) % len(colors)
             scatter = ax.scatter(
                 np.log(valid_data[f'Population_{year}']), 
                 np.log(valid_data[f'A_{year}']),
                 alpha=0.7,
                 s=40,
-                c=colors[idx-1 % len(colors)],  # Use modulo to avoid index errors
+                c=colors[color_idx],
                 edgecolor='white',
                 linewidth=0.5
             )
@@ -343,6 +344,8 @@ def create_population_productivity_scatter(final_gdf, years=None, output_dir=Non
     
     except Exception as e:
         print(f"Error creating population vs. productivity scatter plots: {str(e)}")
+        import traceback
+        traceback.print_exc()
 
 def create_population_amenities_scatter(final_gdf, years=None, output_dir=None):
     """
@@ -365,8 +368,8 @@ def create_population_amenities_scatter(final_gdf, years=None, output_dir=None):
         # Create a figure with a clean white background
         fig = plt.figure(figsize=(15, 6), facecolor='white')
         
-        # Modern color palette
-        colors = ['#3498db', '#2ecc71', '#e74c3c']  # Blue, Green, Red
+        # Modern color palette - ensure we have enough colors
+        colors = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6', '#f1c40f', '#1abc9c', '#34495e', '#e67e22']
         
         for idx, year in enumerate(years, 1):
             ax = plt.subplot(1, len(years), idx)
@@ -391,13 +394,14 @@ def create_population_amenities_scatter(final_gdf, years=None, output_dir=None):
                        ha='center', va='center', fontsize=12, color='#555555')
                 continue
             
-            # Create scatter plot with modern styling
+            # Create scatter plot with modern styling - use modulo to avoid index errors
+            color_idx = (idx - 1) % len(colors)
             scatter = ax.scatter(
                 np.log(valid_data[f'Population_{year}']), 
                 np.log(valid_data[f'u_{year}']),
                 alpha=0.7,
                 s=40,
-                c=colors[idx-1 % len(colors)],  # Use modulo to avoid index errors
+                c=colors[color_idx],
                 edgecolor='white',
                 linewidth=0.5
             )
@@ -487,6 +491,8 @@ def create_population_amenities_scatter(final_gdf, years=None, output_dir=None):
     
     except Exception as e:
         print(f"Error creating population vs. amenities scatter plots: {str(e)}")
+        import traceback
+        traceback.print_exc()
 
 def create_time_series(final_gdf, output_dir=None):
     """
@@ -498,62 +504,82 @@ def create_time_series(final_gdf, output_dir=None):
     """
     print("Creating time series plots...")
     
-    # Define the years to include
-    years = [1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010]
+    try:
+        # Define the years to include - check which ones are actually in the data
+        all_years = [1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010]
+        available_years = []
+        
+        for year in all_years:
+            if (f'Population_{year}' in final_gdf.columns and 
+                f'Wage_{year}' in final_gdf.columns and 
+                f'A_{year}' in final_gdf.columns and 
+                f'u_{year}' in final_gdf.columns):
+                available_years.append(year)
+        
+        if not available_years:
+            print("No years with complete data found for time series plots.")
+            return
+        
+        print(f"Creating time series for years: {available_years}")
+        
+        # Create a figure with subplots
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+        
+        # Set the figure title
+        fig.suptitle('Time Series of Key Metrics', fontsize=16)
+        
+        # Flatten the axes array for easier indexing
+        axes = axes.flatten()
+        
+        # Plot 1: Mean Population
+        mean_population = [final_gdf[f'Population_{year}'].mean() for year in available_years]
+        axes[0].plot(available_years, mean_population, marker='o')
+        axes[0].set_title('Mean Population')
+        axes[0].set_xlabel('Year')
+        axes[0].set_ylabel('Population')
+        axes[0].grid(True, alpha=0.3)
+        
+        # Plot 2: Mean Wage
+        mean_wage = [final_gdf[f'Wage_{year}'].mean() for year in available_years]
+        axes[1].plot(available_years, mean_wage, marker='o', color='orange')
+        axes[1].set_title('Mean Wage')
+        axes[1].set_xlabel('Year')
+        axes[1].set_ylabel('Wage')
+        axes[1].grid(True, alpha=0.3)
+        
+        # Plot 3: Mean Productivity
+        mean_productivity = [final_gdf[f'A_{year}'].mean() for year in available_years]
+        axes[2].plot(available_years, mean_productivity, marker='o', color='green')
+        axes[2].set_title('Mean Productivity (A)')
+        axes[2].set_xlabel('Year')
+        axes[2].set_ylabel('Productivity')
+        axes[2].grid(True, alpha=0.3)
+        
+        # Plot 4: Mean Amenities
+        mean_amenities = [final_gdf[f'u_{year}'].mean() for year in available_years]
+        axes[3].plot(available_years, mean_amenities, marker='o', color='purple')
+        axes[3].set_title('Mean Amenities (u)')
+        axes[3].set_xlabel('Year')
+        axes[3].set_ylabel('Amenities')
+        axes[3].grid(True, alpha=0.3)
+        
+        # Adjust the layout
+        plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
+        
+        # Save the figure
+        if output_dir is None:
+            save_figure(fig, 'time_series.png')
+        else:
+            fig.savefig(os.path.join(output_dir, 'time_series.png'), dpi=300, bbox_inches='tight')
+        
+        plt.close(fig)
+        
+        print("Time series plots created successfully.")
     
-    # Create a figure with subplots
-    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
-    
-    # Set the figure title
-    fig.suptitle('Time Series of Key Metrics', fontsize=16)
-    
-    # Flatten the axes array for easier indexing
-    axes = axes.flatten()
-    
-    # Plot 1: Mean Population
-    mean_population = [final_gdf[f'Population_{year}'].mean() for year in years]
-    axes[0].plot(years, mean_population, marker='o')
-    axes[0].set_title('Mean Population')
-    axes[0].set_xlabel('Year')
-    axes[0].set_ylabel('Population')
-    axes[0].grid(True, alpha=0.3)
-    
-    # Plot 2: Mean Wage
-    mean_wage = [final_gdf[f'Wage_{year}'].mean() for year in years]
-    axes[1].plot(years, mean_wage, marker='o', color='orange')
-    axes[1].set_title('Mean Wage')
-    axes[1].set_xlabel('Year')
-    axes[1].set_ylabel('Wage')
-    axes[1].grid(True, alpha=0.3)
-    
-    # Plot 3: Mean Productivity
-    mean_productivity = [final_gdf[f'A_{year}'].mean() for year in years]
-    axes[2].plot(years, mean_productivity, marker='o', color='green')
-    axes[2].set_title('Mean Productivity (A)')
-    axes[2].set_xlabel('Year')
-    axes[2].set_ylabel('Productivity')
-    axes[2].grid(True, alpha=0.3)
-    
-    # Plot 4: Mean Amenities
-    mean_amenities = [final_gdf[f'u_{year}'].mean() for year in years]
-    axes[3].plot(years, mean_amenities, marker='o', color='purple')
-    axes[3].set_title('Mean Amenities (u)')
-    axes[3].set_xlabel('Year')
-    axes[3].set_ylabel('Amenities')
-    axes[3].grid(True, alpha=0.3)
-    
-    # Adjust the layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
-    
-    # Save the figure
-    if output_dir is None:
-        save_figure(fig, 'time_series.png')
-    else:
-        fig.savefig(os.path.join(output_dir, 'time_series.png'), dpi=300, bbox_inches='tight')
-    
-    plt.close(fig)
-    
-    print("Time series plots created successfully.")
+    except Exception as e:
+        print(f"Error creating time series plots: {str(e)}")
+        import traceback
+        traceback.print_exc()
 
 def generate_all_visualizations(final_gdf=None, years=None):
     """
