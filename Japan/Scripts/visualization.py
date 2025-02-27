@@ -4,8 +4,7 @@
 Visualization Script for QSM Japan
 
 This script creates visualizations of the model results, including:
-- Maps of amenities and utilities
-- Categorical/quantile maps
+- Quantile maps for productivity and amenities
 - Scatter plots of population vs. productivity and amenities
 - Time series of key metrics
 """
@@ -22,96 +21,6 @@ import matplotlib.colors as mcolors
 import geopandas as gpd
 import contextily as ctx
 from utils import get_data_path, get_results_path, save_figure
-
-def create_maps(final_gdf, years=None, output_dir=None):
-    """
-    Create maps of amenities and utilities for each year.
-    
-    Args:
-        final_gdf: GeoDataFrame with model results
-        years: List of years to visualize (default: [1975, 1990, 2010])
-        output_dir: Directory to save the figures (optional)
-    """
-    if years is None:
-        years = [1975, 1990, 2010]  # Selected years for visualization
-    
-    print("Creating maps...")
-    
-    # Create a copy of the GeoDataFrame
-    map_gdf = final_gdf.copy()
-    
-    # Create maps for productivity (A)
-    fig, axes = plt.subplots(1, len(years), figsize=(15, 5))
-    if len(years) == 1:
-        axes = [axes]  # Make sure axes is always a list
-    
-    # Set the figure title
-    fig.suptitle('Productivity (A) Across Japan', fontsize=16)
-    
-    # Use the same colormap for both productivity and amenities
-    cmap = 'viridis'
-    
-    # Create a map for each year
-    for i, year in enumerate(years):
-        # Check if the column exists
-        if f'A_{year}' not in map_gdf.columns:
-            print(f"Warning: A_{year} not found in the data. Skipping.")
-            continue
-        
-        # Plot the map
-        map_gdf.plot(column=f'A_{year}', ax=axes[i], cmap=cmap, 
-                     legend=True, norm=LogNorm())
-        
-        # Set the title and remove axis labels
-        axes[i].set_title(f'Year {year}')
-        axes[i].set_axis_off()
-    
-    # Adjust the layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
-    
-    # Save the figure
-    if output_dir is None:
-        save_figure(fig, 'productivity_maps.png')
-    else:
-        fig.savefig(os.path.join(output_dir, 'productivity_maps.png'), dpi=300, bbox_inches='tight')
-    
-    plt.close(fig)
-    
-    # Create maps for amenities (u)
-    fig, axes = plt.subplots(1, len(years), figsize=(15, 5))
-    if len(years) == 1:
-        axes = [axes]  # Make sure axes is always a list
-    
-    # Set the figure title
-    fig.suptitle('Amenities (u) Across Japan', fontsize=16)
-    
-    # Create a map for each year
-    for i, year in enumerate(years):
-        # Check if the column exists
-        if f'u_{year}' not in map_gdf.columns:
-            print(f"Warning: u_{year} not found in the data. Skipping.")
-            continue
-        
-        # Plot the map - using the same colormap as productivity
-        map_gdf.plot(column=f'u_{year}', ax=axes[i], cmap=cmap, 
-                     legend=True, norm=LogNorm())
-        
-        # Set the title and remove axis labels
-        axes[i].set_title(f'Year {year}')
-        axes[i].set_axis_off()
-    
-    # Adjust the layout
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Make room for the suptitle
-    
-    # Save the figure
-    if output_dir is None:
-        save_figure(fig, 'amenities_maps.png')
-    else:
-        fig.savefig(os.path.join(output_dir, 'amenities_maps.png'), dpi=300, bbox_inches='tight')
-    
-    plt.close(fig)
-    
-    print("Maps created successfully.")
 
 def create_quantile_maps(final_gdf, year=2000, n_quantiles=5, output_dir=None):
     """
@@ -380,10 +289,10 @@ def create_population_productivity_scatter(final_gdf, years=None, output_dir=Non
                     np.log(valid_data[f'A_{year}'])
                 )[0,1]
                 
-                # Add equation to the plot
+                # Add equation to the plot - LEFT UPPER CORNER
                 equation = f"y = {z[0]:.2f}x + {z[1]:.2f}"
                 ax.text(
-                    0.05, 0.15, 
+                    0.05, 0.95, 
                     equation, 
                     transform=ax.transAxes,
                     fontsize=10,
@@ -391,9 +300,9 @@ def create_population_productivity_scatter(final_gdf, years=None, output_dir=Non
                     color='#2c3e50'
                 )
                 
-                # Add correlation to the plot
+                # Add correlation to the plot - LEFT UPPER CORNER
                 ax.text(
-                    0.05, 0.08, 
+                    0.05, 0.88, 
                     f"Correlation: {corr:.2f}", 
                     transform=ax.transAxes,
                     fontsize=11,
@@ -524,7 +433,7 @@ def create_population_amenities_scatter(final_gdf, years=None, output_dir=None):
                     np.log(valid_data[f'u_{year}'])
                 )[0,1]
                 
-                # Add equation to the plot
+                # Add equation to the plot - LEFT BOTTOM CORNER
                 equation = f"y = {z[0]:.2f}x + {z[1]:.2f}"
                 ax.text(
                     0.05, 0.15, 
@@ -535,7 +444,7 @@ def create_population_amenities_scatter(final_gdf, years=None, output_dir=None):
                     color='#2c3e50'
                 )
                 
-                # Add correlation to the plot
+                # Add correlation to the plot - LEFT BOTTOM CORNER
                 ax.text(
                     0.05, 0.08, 
                     f"Correlation: {corr:.2f}", 
@@ -676,9 +585,6 @@ def generate_all_visualizations(final_gdf=None, years=None):
         # Define the years to visualize if not provided
         if years is None:
             years = [1975, 1990, 2010]
-        
-        # Create maps
-        create_maps(final_gdf, years)
         
         # Create quantile maps for each year
         for year in years:
