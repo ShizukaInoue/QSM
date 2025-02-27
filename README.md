@@ -1,12 +1,12 @@
 # Quantitative Spatial Model (QSM) for Japan
 
-This repository contains a Quantitative Spatial Model analysis for Japan, examining spatial economic patterns across Japanese prefectures from 1975 to 2010.
+This repository contains a Quantitative Spatial Model analysis for Japan, examining spatial economic patterns across Japanese cities from 1975 to 2010.
 
 ## Project Overview
 
 This project implements a Quantitative Spatial Model based on the framework developed by Allen and Arkolakis (2014). The model analyzes:
 
-- Population and wage data across Japanese prefectures
+- Population and wage data across Japanese cities
 - Spatial economic patterns and their evolution over time
 - Productivity and amenity calculations
 
@@ -15,28 +15,79 @@ This project implements a Quantitative Spatial Model based on the framework deve
 The data directory contains:
 - Population data from 1970-2010
 - Wage data from 1975-2014
-- Shapefiles for Japanese prefectures
+- Shapefiles for Japanese cities
 - Generated amenities and productivity data
 
-## Code
+## Code Structure
 
-The main analysis is contained in the Jupyter notebook:
-- `Japan/Code/QSM_Japan.ipynb`
+The codebase is organized into modular Python scripts:
 
-## Requirements
+### Main Scripts
 
-- Python 3.x
-- Required packages:
-  - numpy
-  - pandas
-  - geopandas
-  - matplotlib
-  - jaconv
-  - contextily
+- `Japan/Scripts/main.py`: Main script that runs the entire pipeline
+- `Japan/Scripts/data_preparation.py`: Loads and merges population and wage data
+- `Japan/Scripts/spatial_processing.py`: Processes spatial data and calculates distances
+- `Japan/Scripts/model_inversion.py`: Implements the model inversion procedure
+- `Japan/Scripts/visualization.py`: Creates visualizations of the results
+- `Japan/Scripts/utils.py`: Contains utility functions used across scripts
+
+### Jupyter Notebook
+
+- `Japan/Code/QSM_Japan.ipynb`: Original Jupyter notebook with the complete analysis
 
 ## Results
 
-The model calculates productivity and amenity values for Japanese prefectures, providing insights into spatial economic patterns and their changes over time.
+The model calculates productivity and amenity values for Japanese cities, providing insights into spatial economic patterns and their changes over time.
+
+### Key Findings
+
+1. **Productivity-Population Relationship**: There is a positive correlation between population and productivity across Japanese municipalities, consistent with agglomeration effects.
+
+2. **Spatial Distribution**: Productivity and amenities show distinct spatial patterns, with higher values concentrated in major urban centers.
+
+3. **Temporal Evolution**: The relationship between population and productivity has evolved over time, with changes in correlation strength across decades.
+
+### Visualizations
+
+#### Amenities Maps
+![Amenities Maps](Japan/Results/amenities_maps.png)
+
+#### Utilities Maps
+![Utilities Maps](Japan/Results/utilities_maps.png)
+
+#### Population vs. Productivity Scatter Plots
+![Population vs. Productivity](Japan/Results/population_productivity_scatter.png)
+
+#### Population vs. Amenity Scatter Plots
+![Population vs. Productivity](Japan/Results/population_amenities_scatter.png)
+
+
+## Usage
+
+### Running the Full Pipeline
+
+```bash
+cd Japan/Scripts
+python main.py
+```
+
+### Running Specific Steps
+
+You can skip specific steps using the `--skip-steps` argument:
+
+```bash
+python main.py --skip-steps data,spatial
+```
+
+Available steps: `data`, `spatial`, `model`, `viz`
+
+### Processing Specific Years
+
+You can process specific years using the `--years` argument:
+
+```bash
+python main.py --years 1975,1990,2010
+```
 
 ## References
 
@@ -57,16 +108,15 @@ The model calculates productivity and amenity values for Japanese prefectures, p
    pip install -r requirements.txt
    ```
 
-3. Launch Jupyter Notebook:
+3. Run the analysis:
    ```
-   jupyter notebook
+   cd Japan/Scripts
+   python main.py
    ```
-
-4. Open `Japan/Code/QSM_Japan.ipynb` to run the analysis.
 
 ### Note on File Paths
 
-The notebook uses relative paths to access data files. All data files should be placed in the `Japan/Data` directory as described in the "How to Obtain the Data" section. The notebook will automatically look for data files in the correct location relative to the notebook's location.
+The scripts use relative paths to access data files. All data files should be placed in the `Japan/Data` directory as described in the "How to Obtain the Data" section.
 
 ## Data Files
 
