@@ -49,11 +49,8 @@ The model calculates productivity and amenity values for Japanese cities, provid
 
 ### Visualizations
 
-#### Amenities Maps
-![Amenities Maps](Japan/Results/amenities_maps.png)
-
-#### Utilities Maps
-![Utilities Maps](Japan/Results/utilities_maps.png)
+#### Productivity and Amenities Maps (2000)
+![Productivity and Amenities Maps](Japan/Results/quantile_maps_2010.png)
 
 #### Population vs. Productivity Scatter Plots
 ![Population vs. Productivity](Japan/Results/population_productivity_scatter.png)

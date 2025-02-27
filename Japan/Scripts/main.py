@@ -107,7 +107,7 @@ def main():
         if 'viz' not in skip_steps:
             print("\n=== Step 4: Visualization ===")
             from visualization import generate_all_visualizations
-            generate_all_visualizations(final_gdf)
+            generate_all_visualizations(final_gdf, years=years)
         else:
             print("\n=== Skipping Step 4: Visualization ===")
         
